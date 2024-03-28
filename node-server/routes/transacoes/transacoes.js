@@ -8,7 +8,9 @@ async function getTransacoes() {
   }
 
 // chamada GET para obter as transações por usuário
-router.get('/transacoes/listar', async (req, res) => {
+router.post('/transacoes/listar', async (req, res) => {
+
+console.log(req.body);
   const result = await getTransacoes();
   res.send(result);
 });
