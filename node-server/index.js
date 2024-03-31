@@ -2,9 +2,12 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
-import transacoes from './routes/transacoes/transacoes.js';
+import transacoes from './routes/transacoes/todas-transacoes.js';
 import receitas from './routes/transacoes/receitas.js';
 import despesas from './routes/transacoes/despesas.js';
+import transacao from './routes/transacoes/adicionar-transacao.js';
+
+import categorias from './routes/categorias/todas-categorias.js';
 
 const app = express();
 // environment
@@ -22,5 +25,11 @@ app.post('/transacoes/listar/receitas', receitas);
 
 // GET DESPESAS
 app.post('/transacoes/listar/despesas', despesas);
+
+// ADD TRANSAÇÕES
+app.post('/transacao/adicionar', transacao);
+
+// ADD TRANSAÇÕES
+app.post('/categorias/listar', categorias);
 
 app.listen(PORT, () => console.log(`server is running on port: http://localhost:${PORT}`));
