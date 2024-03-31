@@ -1,6 +1,6 @@
 import express from 'express';
 import executeQuery from '../../db.config.js';
-import { despesas_com_relacionamentos } from './queries.js';
+import { despesas_com_relacionamentos } from '../../queries/transacoes/GET/index.js';
 const router = express.Router();
 
 // Obter transações por usuário
