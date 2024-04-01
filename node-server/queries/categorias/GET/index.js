@@ -1,1 +1,1 @@
-export const get_categorias = `SELECT cat_id, cat_nome FROM tb_categorias;`
+export const get_categorias = `SELECT cat_id, cat_nome, cat_cor, usr_id FROM tb_categorias;`

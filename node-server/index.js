@@ -10,6 +10,9 @@ import deletarTransacao from './routes/transacoes/deletar-transacao.js';
 import atualizarTransacao from './routes/transacoes/atualizar-transacao.js';
 
 import categorias from './routes/categorias/todas-categorias.js';
+import adicionarCategoria from './routes/categorias/adicionar-categoria.js';
+import atualizarCategoria from './routes/categorias/atualizar-categoria.js';
+import deletarCategoria from './routes/categorias/deletar-categoria.js';
 
 const app = express();
 // environment
@@ -39,6 +42,15 @@ app.post('/transacao/atualizar', atualizarTransacao);
 
 // ADD TRANSAÇÕES
 app.post('/categorias/listar', categorias);
+
+// ADD TRANSAÇÕES
+app.post('/categoria/adicionar', adicionarCategoria);
+
+// ADD TRANSAÇÕES
+app.post('/categoria/atualizar', atualizarCategoria);
+
+// ADD TRANSAÇÕES
+app.post('/categoria/deletar', deletarCategoria);
 
 
 app.listen(PORT, () => console.log(`server is running on port: http://localhost:${PORT}`));
