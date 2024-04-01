@@ -1,12 +1,14 @@
 export const transacoes_com_relacionamentos = `
   SELECT
     trs.trs_data_ocorrido,
+    trs.trs_id,
     trs.trs_ano_ocorrido,
     trs.trs_mes_ocorrido,
     trs.trs_valor,
     trs.trs_titulo,
     cat.cat_nome AS categoria_nome,
     cat.cat_cor AS categoria_cor,
+    cat.cat_id AS id_categoria,
     met.met_nome AS metodo,
     usr.usr_nome AS nome_usuario,
     tip_trs.tip_nome AS tipo_transacao,
@@ -23,6 +25,7 @@ export const receitas_com_relacionamentos = `
   SELECT
       trs.trs_data_ocorrido,
       trs.trs_ano_ocorrido,
+      trs.trs_id,
       trs.trs_mes_ocorrido,
       trs.trs_valor,
       trs.trs_titulo,
@@ -45,6 +48,7 @@ export const despesas_com_relacionamentos = `
   SELECT
       trs.trs_data_ocorrido,
       trs.trs_ano_ocorrido,
+      trs.trs_id,
       trs.trs_mes_ocorrido,
       trs.trs_valor,
       trs.trs_titulo,

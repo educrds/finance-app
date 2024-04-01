@@ -1,0 +1,1 @@
+export const delete_transacao_by_id = `DELETE FROM tb_transacoes WHERE  trs_id=?`
