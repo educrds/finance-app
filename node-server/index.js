@@ -10,6 +10,7 @@ import deletarTransacao from './routes/transacoes/deletar-transacao.js';
 import atualizarTransacao from './routes/transacoes/atualizar-transacao.js';
 
 import categorias from './routes/categorias/todas-categorias.js';
+import categoriasSelect from './routes/categorias/categorias-select.js';
 import adicionarCategoria from './routes/categorias/adicionar-categoria.js';
 import atualizarCategoria from './routes/categorias/atualizar-categoria.js';
 import deletarCategoria from './routes/categorias/deletar-categoria.js';
@@ -40,8 +41,14 @@ app.post('/transacao/deletar', deletarTransacao);
 // ATUALIZAR TRANSAÇÕES
 app.post('/transacao/atualizar', atualizarTransacao);
 
+
+// -------------------- CATEGORIAS
+
 // ADD TRANSAÇÕES
 app.post('/categorias/listar', categorias);
+
+// ADD TRANSAÇÕES
+app.post('/categorias/listar-select', categoriasSelect);
 
 // ADD TRANSAÇÕES
 app.post('/categoria/adicionar', adicionarCategoria);
