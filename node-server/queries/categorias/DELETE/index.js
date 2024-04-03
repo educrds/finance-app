@@ -1,3 +1,7 @@
 export const deletar_categoria = `
-  DELETE FROM tb_categorias WHERE  cat_id=?;
+  UPDATE 
+    tb_categorias 
+  SET 
+    cat_ativo='1'
+  WHERE cat_id = ?
 `;

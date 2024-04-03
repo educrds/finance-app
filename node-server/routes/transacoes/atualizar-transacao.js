@@ -20,6 +20,7 @@ router.post('/transacao/atualizar', async (req, res) => {
     data_ocorrido,
     body.data.trs_usuario, 
     body.data.trs_tipo, 
+    body.data.trs_status,
     body.data.trs_id,
   ];
 

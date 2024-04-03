@@ -9,7 +9,8 @@ SET
 	trs_descricao = ?,
 	trs_data_ocorrido = ?,
 	trs_usuario = ?,
-	trs_tipo = ?
+	trs_tipo = ?,
+	trs_status = ?
 WHERE
 	trs_id = ?;
 `;
