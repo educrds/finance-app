@@ -20,7 +20,9 @@ export const transacoes_com_relacionamentos = `
     LEFT JOIN tb_categorias cat ON cat.cat_id = trs.trs_categoria
     LEFT JOIN tb_metodo met ON met.met_id = trs.trs_metodo
     LEFT JOIN tb_usuarios usr ON usr.usr_id = trs.trs_usuario
-    LEFT JOIN tb_tipo_transacao tip_trs ON tip_trs.tip_id = trs.trs_tipo`;
+    LEFT JOIN tb_tipo_transacao tip_trs ON tip_trs.tip_id = trs.trs_tipo
+  WHERE trs.trs_ano_ocorrido = ? AND trs.trs_mes_ocorrido = ?  
+`;
 
 export const receitas_com_relacionamentos = `
   SELECT
@@ -44,7 +46,8 @@ export const receitas_com_relacionamentos = `
       LEFT JOIN tb_metodo met ON met.met_id = trs.trs_metodo
       LEFT JOIN tb_usuarios usr ON usr.usr_id = trs.trs_usuario
       LEFT JOIN tb_tipo_transacao tip_trs ON tip_trs.tip_id = trs.trs_tipo
-    WHERE tip_trs.tip_id = 1`;
+    WHERE tip_trs.tip_id = 1 AND trs.trs_ano_ocorrido = ? AND trs.trs_mes_ocorrido = ?  
+`;
 
 export const despesas_com_relacionamentos = `
   SELECT
@@ -68,4 +71,14 @@ export const despesas_com_relacionamentos = `
       LEFT JOIN tb_metodo met ON met.met_id = trs.trs_metodo
       LEFT JOIN tb_usuarios usr ON usr.usr_id = trs.trs_usuario
       LEFT JOIN tb_tipo_transacao tip_trs ON tip_trs.tip_id = trs.trs_tipo
-    WHERE tip_trs.tip_id = 2`;
+    WHERE tip_trs.tip_id = 2 AND trs.trs_ano_ocorrido = ? AND trs.trs_mes_ocorrido = ?  
+`;
+
+export const soma_transacoes = `
+  SELECT
+    SUM(CASE WHEN trs_tipo = 1 THEN trs_valor ELSE 0 END) AS soma_receitas,
+    SUM(CASE WHEN trs_tipo = 2 THEN trs_valor ELSE 0 END) AS soma_despesas
+  FROM
+    tb_transacoes
+  WHERE trs_ano_ocorrido = ? AND trs_mes_ocorrido = ?;
+`;
