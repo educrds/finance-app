@@ -9,7 +9,7 @@ router.post('/categoria/adicionar', async (req, res) => {
   const { body } = req;
 
   // Montar os parâmetros
-  const params = [body.data.cat_nome, body.data.cat_cor, body.data.usr_id];
+  const params = [body.data.cat_nome, body.data.cat_cor, body.data.usr_id, body.data.cat_tip_id];
 
   const result = await executeQuery(insert_categoria, params);
 
