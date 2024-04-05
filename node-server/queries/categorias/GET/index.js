@@ -1,6 +1,6 @@
 export const get_categorias = `
 SELECT 
-  cat.cat_id, cat.cat_nome, cat.cat_cor, cat.usr_id, tip.tip_nome AS cat_tip_nome
+  cat.cat_id, cat.cat_nome, cat.cat_tip_id, cat.cat_cor, cat.usr_id, tip.tip_nome AS cat_tip_nome
 FROM 
   tb_categorias cat
 LEFT JOIN 
