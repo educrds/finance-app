@@ -7,7 +7,7 @@ const router = express.Router();
 // chamada GET para obter as transações por usuário
 router.post('/transacao/deletar', async (req, res) => {
   const { body } = req;
-  const id = body.data.trs_id;
+  const id = body.data;
 
   const result = await executeQuery(delete_transacao_by_id, id);
 
