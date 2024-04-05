@@ -3,12 +3,13 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import transacoes from './routes/transacoes/todas-transacoes.js';
-import somaTransacoes from './routes/transacoes/soma-transacoes.js';
 import receitas from './routes/transacoes/receitas.js';
 import despesas from './routes/transacoes/despesas.js';
 import transacao from './routes/transacoes/adicionar-transacao.js';
 import deletarTransacao from './routes/transacoes/deletar-transacao.js';
 import atualizarTransacao from './routes/transacoes/atualizar-transacao.js';
+
+import getMetodosPagamento from './routes/transacoes/metodos-transacao.js';
 
 import categorias from './routes/categorias/todas-categorias.js';
 import categoriasSelect from './routes/categorias/categorias-select.js';
@@ -27,11 +28,11 @@ app.use(bodyParser.json(), cors(), bodyParser.urlencoded({ extended: true }));
 // GET TRANSAÇÕES
 app.post('/transacoes/listar', transacoes);
 
-// GET TRANSAÇÕES
-app.post('/transacoes/somatorio', somaTransacoes);
-
 // GET RECEITAS
 app.post('/transacoes/listar/receitas', receitas);
+
+// GET RECEITAS
+app.post('/transacoes/listar/metodos', getMetodosPagamento);
 
 // GET DESPESAS
 app.post('/transacoes/listar/despesas', despesas);
