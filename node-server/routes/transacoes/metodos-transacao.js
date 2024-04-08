@@ -1,5 +1,5 @@
 import express from 'express';
-import executeQuery from '../../db.config.js';
+import { executeQuery } from '../../db.config.js';
 import { get_metodos } from '../../queries/transacoes/GET/index.js';
 const router = express.Router();
 

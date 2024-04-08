@@ -1,10 +1,10 @@
 import express from 'express';
-import executeQuery from '../../db.config.js';
+import { executeQuery } from '../../db.config.js';
 import { delete_transacao_by_id } from '../../queries/transacoes/DELETE/index.js';
 
 const router = express.Router();
 
-// chamada GET para obter as transações por usuário
+// chamada POST para deletar a transacao por id;
 router.post('/transacao/deletar', async (req, res) => {
   const { body } = req;
   const id = body.data;

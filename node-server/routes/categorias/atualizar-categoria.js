@@ -1,5 +1,5 @@
 import express from 'express';
-import executeQuery from '../../db.config.js';
+import { executeQuery } from '../../db.config.js';
 import { atualizar_categoria } from '../../queries/categorias/UPDATE/index.js';
 
 const router = express.Router();

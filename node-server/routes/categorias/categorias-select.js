@@ -1,6 +1,6 @@
 import express from 'express';
-import executeQuery from '../../db.config.js';
-import { get_categorias_select } from '../../queries/categorias/GET/index.js'
+import { executeQuery } from '../../db.config.js';
+import { get_categorias_select } from '../../queries/categorias/GET/index.js';
 
 const router = express.Router();
 
