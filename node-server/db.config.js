@@ -12,13 +12,27 @@ const pool = mariadb.createPool({
   connectionLimit: 3
 })
 
-export default async function executeQuery(query, ...params){
+export async function executeQuery(query, ...params){
   let conn;
 
   try {
     conn = await pool.getConnection();
     
     return await conn.query(query, ...params);
+  } catch (error) {
+    throw error;
+  } finally {
+    conn && conn.end();
+  }
+}
+
+export async function executeBatch(query, ...params){
+  let conn;
+
+  try {
+    conn = await pool.getConnection();
+    
+    return await conn.batch(query, ...params);
   } catch (error) {
     throw error;
   } finally {
