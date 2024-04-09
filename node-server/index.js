@@ -1,7 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import passport from 'passport';
 
 import transacoes from './routes/transacoes/todas-transacoes.js';
 import transacao from './routes/transacoes/adicionar-transacao.js';
