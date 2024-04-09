@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import passport from 'passport';
 
 import transacoes from './routes/transacoes/todas-transacoes.js';
 import transacao from './routes/transacoes/adicionar-transacao.js';
@@ -14,6 +15,8 @@ import categoriasSelect from './routes/categorias/categorias-select.js';
 import adicionarCategoria from './routes/categorias/adicionar-categoria.js';
 import atualizarCategoria from './routes/categorias/atualizar-categoria.js';
 import deletarCategoria from './routes/categorias/deletar-categoria.js';
+
+import authUser from './routes/user/auth-user.js';
 
 const app = express();
 // environment
@@ -42,7 +45,6 @@ app.post('/transacao/deletar', deletarTransacao);
 // ATUALIZAR TRANSAÇÕES
 app.post('/transacao/atualizar', atualizarTransacao);
 
-
 // -------------------- CATEGORIAS
 
 // ADD TRANSAÇÕES
@@ -60,5 +62,12 @@ app.post('/categoria/atualizar', atualizarCategoria);
 // ADD TRANSAÇÕES
 app.post('/categoria/deletar', deletarCategoria);
 
+// -------------------- USUARIO
+
+// ADD TRANSAÇÕES
+app.post('/user/login', authUser);
+
+// ADD TRANSAÇÕES
+app.post('/user/register', authUser);
 
 app.listen(PORT, () => console.log(`server is running on port: http://localhost:${PORT}`));
