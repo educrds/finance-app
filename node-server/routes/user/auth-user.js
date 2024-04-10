@@ -16,7 +16,8 @@ router.post('/user/register', async (req, res) => {
   const result = await executeQuery(insert_user_in_bd, params);
 
   if (result.affectedRows > 0) {
-    const token = jwt.sign({ name: auth_name, email: auth_email }, 'seu_segredo_secreto', { expiresIn: 120000 });
+    const payload = { sub:result.usr_id , name: result.usr_nome, email: auth_email };
+    const token = jwt.sign(payload, 'seu_segredo_secreto', { expiresIn: 120000 });
 
     res.status(200).json({ message: 'Usuário adicionado com sucesso!', token: token });
     return;
