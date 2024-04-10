@@ -11,7 +11,7 @@ router.post('/transacao/atualizar', async (req, res) => {
   const data_ocorrido = new Date(body.data.trs_data_ocorrido).toISOString().slice(0, 19).replace('T', ' ');
 
   // Montar os parâmetros
-  const params = [body.data.trs_categoria, body.data.trs_valor, body.data.trs_metodo, body.data.trs_titulo, body.data.trs_descricao, data_ocorrido, body.data.trs_usuario, body.data.trs_tipo, body.data.trs_status, body.data.trs_id];
+  const params = [body.data.trs_categoria, body.data.trs_valor, body.data.trs_metodo, body.data.trs_titulo, body.data.trs_descricao, data_ocorrido, body.usr_id, body.data.trs_tipo, body.data.trs_status, body.data.trs_id];
 
   const result = await executeQuery(atualizar_transacao_por_id, params);
 

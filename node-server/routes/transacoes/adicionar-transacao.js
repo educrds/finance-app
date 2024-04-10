@@ -14,7 +14,7 @@ router.post('/transacao/adicionar', async (req, res) => {
   const data_ocorrido_formatted = data_ocorrido.toISOString().slice(0, 19).replace('T', ' ');
 
   // Montar os parâmetros
-  const params = [body.data.trs_valor, data_ocorrido_formatted, body.data.trs_titulo, body.data.trs_descricao, body.data.trs_categoria, body.data.trs_usuario, body.data.trs_tipo, body.data.trs_metodo, body.data.trs_parcelado];
+  const params = [body.data.trs_valor, data_ocorrido_formatted, body.data.trs_titulo, body.data.trs_descricao, body.data.trs_categoria, body.usr_id, body.data.trs_tipo, body.data.trs_metodo, body.data.trs_parcelado];
 
   const result = await executeQuery(insert_transacao, params);
   let id_transacao_pai;

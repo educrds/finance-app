@@ -7,7 +7,10 @@ const router = express.Router();
 router.post('/categorias/listar-select', async (req, res) => {
   const { body } = req;
 
-  const result = await executeQuery(get_categorias_select, body.data);
+  let user_id = body.usr_id;
+  const params = [body.data, user_id];
+
+  const result = await executeQuery(get_categorias_select, params);
   res.status(200).send(result);
 });
 

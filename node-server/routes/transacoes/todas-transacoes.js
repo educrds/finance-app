@@ -14,7 +14,10 @@ router.post('/transacoes/listar', async (req, res) => {
   const tipo_transacao = body.data.idTipoTransacao;
 
   // Montar os parâmetros
-  const params = [tipo_transacao, tipo_transacao, tipo_transacao, year, month, tipo_transacao, tipo_transacao, tipo_transacao, year, month];
+  const params = [
+    body.usr_id, tipo_transacao, tipo_transacao, tipo_transacao, year, month,
+    body.usr_id, tipo_transacao, tipo_transacao, tipo_transacao, year, month
+  ];
 
   const result = await executeQuery(transacoes_com_relacionamentos, params);
   res.send(result);

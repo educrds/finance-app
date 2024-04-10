@@ -21,7 +21,8 @@ FROM
 	LEFT JOIN tb_metodo met ON met.met_id = trs.trs_metodo
 	LEFT JOIN tb_tipo_transacao tip_trs ON tip_trs.tip_id = trs.trs_tipo
 WHERE
-  (
+	trs_usuario = ?
+	AND (
     (trs_tipo = 1 AND ? = 1)
     OR (trs_tipo = 2 AND ? = 2)
     OR (? IS NULL)
@@ -52,8 +53,8 @@ FROM
 	LEFT JOIN tb_categorias cat ON cat.cat_id = trs.trs_categoria
 	LEFT JOIN tb_metodo met ON met.met_id = trs.trs_metodo
 	LEFT JOIN tb_tipo_transacao tip_trs ON tip_trs.tip_id = trs.trs_tipo
-WHERE
-  (
+WHERE trs_usuario = ?
+  AND (
     (trs_tipo = 1 AND ? = 1)
     OR (trs_tipo = 2 AND ? = 2)
     OR (? IS NULL)

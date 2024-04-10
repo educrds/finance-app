@@ -35,7 +35,8 @@ router.post('/user/login', async (req, res) => {
   let checkPwdHash = await comparePassword(auth_password, result.password_hashed);
 
   if (checkPwdHash) {
-    const token = jwt.sign({ name: result.usr_nome, email: auth_email }, 'seu_segredo_secreto', { expiresIn: 120000 });
+    const payload = { sub:result.usr_id , name: result.usr_nome, email: auth_email };
+    const token = jwt.sign(payload, 'seu_segredo_secreto', { expiresIn: '1d' });
 
     res.status(200).json({ message: 'Usuário autenticado com sucesso!', token: token });
     return;

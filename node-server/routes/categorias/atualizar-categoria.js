@@ -9,7 +9,7 @@ router.post('/categoria/atualizar', async (req, res) => {
   const { body } = req;
 
   // Montar os parâmetros
-  const params = [body.data.cat_nome, body.data.cat_cor, body.data.usr_id, body.data.cat_tip_id, body.data.cat_id];
+  const params = [body.data.cat_nome, body.data.cat_cor, body.usr_id, body.data.cat_tip_id, body.data.cat_id];
 
   const result = await executeQuery(atualizar_categoria, params);
 
