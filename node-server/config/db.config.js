@@ -1,5 +1,5 @@
-import mariadb from 'mariadb'
-import dotenv from 'dotenv'
+import mariadb from 'mariadb';
+import dotenv from 'dotenv';
 
 const process = dotenv.config();
 
@@ -9,33 +9,37 @@ const pool = mariadb.createPool({
   user: process.parsed.USER,
   port: process.parsed.PORT,
   password: process.parsed.PASSWORD,
-  connectionLimit: 3
-})
+  connectionLimit: 3,
+});
 
-export async function executeQuery(query, ...params){
+export async function executeQuery(query, ...params) {
   let conn;
 
   try {
     conn = await pool.getConnection();
-    
+
     return await conn.query(query, ...params);
   } catch (error) {
     throw error;
   } finally {
-    conn && conn.end();
+    if (conn) {
+      conn.release();
+    }
   }
 }
 
-export async function executeBatch(query, ...params){
+export async function executeBatch(query, ...params) {
   let conn;
 
   try {
     conn = await pool.getConnection();
-    
+
     return await conn.batch(query, ...params);
   } catch (error) {
     throw error;
   } finally {
-    conn && conn.end();
+    if (conn) {
+      conn.release();
+    }
   }
 }

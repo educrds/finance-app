@@ -1,7 +1,9 @@
 import express from 'express';
-import { executeQuery } from '../../db.config.js';
-import { comparePassword, hashPassword } from '../../hash-password.config.js';
-import { get_user_by_email, insert_user_in_bd } from '../../queries/user/INSERT/index.js';
+import { executeQuery } from '../../config/db.config.js';
+import { comparePassword, hashPassword } from '../../helpers/hash-password.config.js';
+import { insert_user_in_bd } from '../../queries/user/INSERT/index.js';
+import { get_user_by_email, verify_exists_email } from '../../queries/user/GET/index.js';
+
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
@@ -9,11 +11,18 @@ const router = express.Router();
 router.post('/user/register', async (req, res) => {
   const { data } = req.body;
   const { auth_name, auth_email, auth_password } = data;
+
+  let result = await executeQuery(verify_exists_email, auth_email);
+  if(result.length > 0) {
+    res.status(401).json({ message: 'Já existe uma conta cadastrada com o email fornecido.' });
+    return;
+  }
+
   let hashPwd = await hashPassword(auth_password);
 
   const params = [auth_name, auth_email, hashPwd];
 
-  const result = await executeQuery(insert_user_in_bd, params);
+  result = await executeQuery(insert_user_in_bd, params);
 
   if (result.affectedRows > 0) {
     const payload = { sub:result.usr_id , name: result.usr_nome, email: auth_email };
@@ -30,7 +39,13 @@ router.post('/user/login', async (req, res) => {
   const { data } = req.body;
   const { auth_email, auth_password } = data;
 
-  let result = await executeQuery(get_user_by_email, auth_email);
+  let result = await executeQuery(verify_exists_email, auth_email);
+  if(result.length === 0) {
+    res.status(401).json({ message: 'Insira um usuário válido.' });
+    return;
+  }
+
+  result = await executeQuery(get_user_by_email, auth_email);
   result = result[0];
 
   let checkPwdHash = await comparePassword(auth_password, result.password_hashed);
@@ -43,7 +58,7 @@ router.post('/user/login', async (req, res) => {
     return;
   }
 
-  res.status(401).json({ message: 'Credenciais não válidas.!' });
+  res.status(401).json({ message: 'Credenciais não válidas.' });
   return;
 });
 
