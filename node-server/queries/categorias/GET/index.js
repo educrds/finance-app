@@ -6,7 +6,7 @@ FROM
 LEFT JOIN 
   tb_tipo_transacao tip ON tip.tip_id = cat.cat_tip_id
 WHERE cat_ativo = '0' AND (cat.usr_id = ? || cat.usr_id IS NULL) 
-ORDER BY usr_id ASC;
+ORDER BY usr_id DESC;
 `
 
 export const get_categorias_select = `
