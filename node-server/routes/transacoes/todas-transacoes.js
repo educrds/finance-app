@@ -24,7 +24,7 @@ router.post('/transacoes/listar', async (req, res) => {
     if (result.length > 0) {
       res.status(200).send(result);
     } else {
-      res.status(404).send({ message: 'Nenhuma transação encontrada.' });
+      res.status(200).send([]);
     }
   } catch (error) {
     res.status(500).send({ message: 'Ocorreu um erro ao buscar transações.' });
@@ -76,8 +76,6 @@ router.post('/transacao/atualizar', async (req, res) => {
 
     if (result.affectedRows > 0) {
       res.status(200).json({ message: 'Registro atualizado com sucesso!' });
-    } else {
-      res.status(404).json({ message: 'Nenhum registro encontrado!' });
     }
   } catch (error) {
     res.status(500).json({ message: 'Ocorreu um erro ao atualizar o registro, tente novamente.' });
