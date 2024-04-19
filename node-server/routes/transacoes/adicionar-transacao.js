@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/transacao/adicionar', async (req, res) => {
   try {
     const { sub } = req.body.user;
-    const { trs_valor, trs_titulo, trs_categoria, trs_data_ocorrido, data_fim_repeticao, trs_tipo, trs_metodo, trs_parcelado } = req.body.data;
+    const { trs_valor, trs_titulo, trs_categoria, trs_data_ocorrido, data_fim_repeticao, trs_tipo, trs_metodo, trs_parcelado, trs_status } = req.body.data;
 
     let data_fim_rep = new Date(data_fim_repeticao);
     const data_ocorrido = new Date(trs_data_ocorrido);
@@ -17,7 +17,7 @@ router.post('/transacao/adicionar', async (req, res) => {
     const user_id = sub;
 
     // Montar os parâmetros
-    const params = [trs_valor, data_ocorrido_formatted, trs_titulo, trs_categoria, user_id, trs_tipo, trs_metodo, trs_parcelado];
+    const params = [trs_valor, data_ocorrido_formatted, trs_titulo, trs_categoria, user_id, trs_tipo, trs_metodo, trs_parcelado, trs_status];
     const result = await executeQuery(insert_transacao, params);
 
     const id_transacao_pai = result?.insertId;
