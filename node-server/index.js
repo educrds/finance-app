@@ -58,4 +58,4 @@ app.post('/user/login', authUser);
 // REGISTRA USUÁRIO
 app.post('/user/register', authUser);
 
-app.listen(PORT, () => console.log(`server is running on port: http://localhost:${PORT}`));
+app.listen(PORT, '192.168.1.20', () => console.log(`server is running on port: http://localhost:`));

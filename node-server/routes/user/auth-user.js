@@ -13,7 +13,7 @@ router.post('/user/register', async (req, res) => {
   const { auth_name, auth_email, auth_password } = data;
 
   let result = await executeQuery(verify_exists_email, auth_email);
-  if(result.length > 0) {
+  if (result.length > 0) {
     res.status(401).json({ message: 'Já existe uma conta cadastrada com o email fornecido.' });
     return;
   }
@@ -26,7 +26,7 @@ router.post('/user/register', async (req, res) => {
 
   if (result.affectedRows > 0) {
     const insertId = String(result.insertId).replace('n');
-    const payload = { sub:insertId , name: auth_name, email: auth_email };
+    const payload = { sub: insertId, name: auth_name, email: auth_email };
     const token = jwt.sign(payload, 'seu_segredo_secreto', { expiresIn: '1d' });
 
     res.status(200).json({ message: 'Usuário adicionado com sucesso!', token: token });
@@ -41,7 +41,7 @@ router.post('/user/login', async (req, res) => {
   const { auth_email, auth_password } = data;
 
   let result = await executeQuery(verify_exists_email, auth_email);
-  if(result.length === 0) {
+  if (result.length === 0) {
     res.status(401).json({ message: 'Insira um usuário válido.' });
     return;
   }
@@ -52,7 +52,7 @@ router.post('/user/login', async (req, res) => {
   let checkPwdHash = await comparePassword(auth_password, result.password_hashed);
 
   if (checkPwdHash) {
-    const payload = { sub:result.usr_id , name: result.usr_nome, email: auth_email };
+    const payload = { sub: result.usr_id, name: result.usr_nome, email: auth_email };
     const token = jwt.sign(payload, 'seu_segredo_secreto', { expiresIn: '1d' });
 
     res.status(200).json({ message: 'Usuário autenticado com sucesso!', token: token });
