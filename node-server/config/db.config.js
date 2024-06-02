@@ -43,3 +43,32 @@ export async function executeBatch(query, ...params) {
     }
   }
 }
+
+export async function executeTransaction(queries) {
+  let conn;
+
+  try {
+    conn = await pool.getConnection();
+    await conn.beginTransaction();
+
+    for (const { query, params } of queries) {
+      if (Array.isArray(params[0])) {
+        await conn.batch(query, ...params);
+      } else {
+        await conn.query(query, ...params);
+      }
+    }
+
+    await conn.commit();
+  } catch (error) {
+    if (conn) {
+      await conn.rollback();
+    }
+    throw error;
+  } finally {
+    if (conn) {
+      conn.release();
+    }
+  }
+}
+
