@@ -6,6 +6,7 @@ import { insert_categoria } from '../../queries/categorias/INSERT/index.js';
 import { atualizar_categoria } from '../../queries/categorias/UPDATE/index.js';
 import { deletar_categoria } from '../../queries/categorias/DELETE/index.js';
 import { get_categorias_select } from '../../queries/categorias/GET/index.js';
+import { verifyExistsCategory } from '../../helpers/verifyExistsCategory.js';
 
 const router = express.Router();
 
@@ -46,9 +47,13 @@ router.post('/categoria/adicionar', async (req, res) => {
     const { sub } = req.body.user;
     const { cat_nome, cat_cor, cat_tip_id } = req.body.data;
 
+    const existsCategory = await verifyExistsCategory([cat_nome, sub]);
+    if(existsCategory){
+        return res.status(500).json({ message: 'Já existe uma categoria com o nome fornecido.' });
+    }
+
     // Montar os parâmetros
     const params = [cat_nome, cat_cor, sub, cat_tip_id];
-
     const result = await executeQuery(insert_categoria, params);
 
     if (result.affectedRows > 0) {
@@ -65,9 +70,13 @@ router.post('/categoria/atualizar', async (req, res) => {
     const { sub } = req.body.user;
     const { cat_nome, cat_cor, cat_tip_id, cat_id } = req.body.data;
 
+    const existsCategory = await verifyExistsCategory([cat_nome, sub]);
+    if(existsCategory){
+        return res.status(500).json({ message: 'Já existe uma categoria com o nome fornecido.' });
+    }
+
     // Montar os parâmetros
     const params = [cat_nome, cat_cor, sub, cat_tip_id, cat_id];
-
     const result = await executeQuery(atualizar_categoria, params);
     if (result.affectedRows > 0) {
       res.status(200).json({ message: 'Registro adicionado com sucesso!' });
