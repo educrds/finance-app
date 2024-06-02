@@ -1,5 +1,5 @@
 import express from 'express';
-import { executeBatch, executeQuery } from '../../config/db.config.js';
+import { executeQuery, executeTransaction } from '../../config/db.config.js';
 import { transacoes_com_relacionamentos, get_metodos, get_transacoes_parceladas_by_pai_id } from '../../queries/transacoes/GET/index.js';
 import { delete_transacao_by_id, delete_transacao_parcela_by_id } from '../../queries/transacoes/DELETE/index.js';
 import { atualizar_transacao_por_id } from '../../queries/transacoes/UPDATE/index.js';
@@ -50,9 +50,15 @@ router.post('/transacoes/listar/metodos', async (req, res) => {
 router.post('/transacao/deletar', async (req, res) => {
   try {
     const { body } = req;
-    const id_transacao = body.data;
+    const { id_transacao, trs_parcelado } = body.data;
+    
+    let result;
 
-    const result = await executeQuery(delete_transacao_by_id, id_transacao);
+    if(trs_parcelado){
+      result = await executeQuery(delete_transacao_parcela_by_id, id_transacao);
+    } else {
+      result = await executeQuery(delete_transacao_by_id, id_transacao);
+    }
 
     if (result.affectedRows > 0) {
       res.status(200).json({ message: 'Registro deletado com sucesso!' });
@@ -62,43 +68,37 @@ router.post('/transacao/deletar', async (req, res) => {
   }
 });
 
-router.post('/transacao/deletar-parcela', async (req, res) => {
-  try {
-    const { body } = req;
-    const id_transacao = body.data;
-
-    const result = await executeQuery(delete_transacao_parcela_by_id, id_transacao);
-
-    if (result.affectedRows > 0) {
-      res.status(200).json({ message: 'Registro deletado com sucesso!' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: 'Ocorreu um erro ao deletar o registro, tente novamente.' });
-  }
-});
-
+// Rota POST para deletar todas as transações relacionadas a uma transação pai
 router.post('/transacao/deletar-todas', async (req, res) => {
   try {
-    const { body } = req;
-    const id_transacao = body.data;
+    const id_transacao = req.body.data;
 
-    const resultParceladasById = await executeQuery(get_transacoes_parceladas_by_pai_id, id_transacao);
-    if(resultParceladasById){
-      const parcelasIds = resultParceladasById.map((par)=> par.par_id);
-      const resultBatch = await executeBatch(delete_transacao_parcela_by_id, parcelasIds);
+    // Consulta para buscar as transações parceladas (filhas) baseadas no ID da transação pai
+    let result = await executeQuery(get_transacoes_parceladas_by_pai_id, id_transacao);
 
-      if(resultBatch.affectedRows > 0){
-        const result = await executeQuery(delete_transacao_by_id, id_transacao);
+    // Verifica se existem transações filhas
+    if (result.length > 0) {
+      const ids_parcelas = result.map((par) => par.par_id);
 
-        if (result.affectedRows > 0) {
-          res.status(200).json({ message: 'Registros deletados com sucesso!' });
-        }
+      // Executa a transação que deleta as transações filhas e a transação pai
+      await executeTransaction([
+        { query: delete_transacao_parcela_by_id, params: [ids_parcelas] }, // Deleta as transações filhas
+        { query: delete_transacao_by_id, params: [id_transacao] } // Deleta a transação pai
+      ]);
+
+      res.status(200).json({ message: 'Registros deletados com sucesso!' });
+    } else {
+      // caso não exista mais transações filhas a serem excluídas
+      result = await executeQuery(delete_transacao_by_id, id_transacao);
+
+      if(result.affectedRows > 0){
+        res.status(200).json({ message: 'Registros deletados com sucesso!' });
       }
     }
   } catch (error) {
-    res.status(500).json({ message: 'Ocorreu um erro ao deletar o registro, tente novamente.' });
+    // Responde com erro 500 se ocorrer um erro ao deletar os registros
+    res.status(500).json({ message: 'Ocorreu um erro ao deletar registros, tente novamente.' });
   }
-
 });
 
 // Chamada POST para obter as transações por usuário.
