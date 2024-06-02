@@ -1,7 +1,7 @@
 import express from 'express';
-import { executeQuery } from '../../config/db.config.js';
-import { transacoes_com_relacionamentos, get_metodos } from '../../queries/transacoes/GET/index.js';
-import { delete_transacao_by_id } from '../../queries/transacoes/DELETE/index.js';
+import { executeBatch, executeQuery } from '../../config/db.config.js';
+import { transacoes_com_relacionamentos, get_metodos, get_transacoes_parceladas_by_pai_id } from '../../queries/transacoes/GET/index.js';
+import { delete_transacao_by_id, delete_transacao_parcela_by_id } from '../../queries/transacoes/DELETE/index.js';
 import { atualizar_transacao_por_id } from '../../queries/transacoes/UPDATE/index.js';
 
 import { getYearAndMonth } from '../../helpers/gerYearAndMonth.js';
@@ -60,6 +60,45 @@ router.post('/transacao/deletar', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Ocorreu um erro ao deletar o registro, tente novamente.' });
   }
+});
+
+router.post('/transacao/deletar-parcela', async (req, res) => {
+  try {
+    const { body } = req;
+    const id_transacao = body.data;
+
+    const result = await executeQuery(delete_transacao_parcela_by_id, id_transacao);
+
+    if (result.affectedRows > 0) {
+      res.status(200).json({ message: 'Registro deletado com sucesso!' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Ocorreu um erro ao deletar o registro, tente novamente.' });
+  }
+});
+
+router.post('/transacao/deletar-todas', async (req, res) => {
+  try {
+    const { body } = req;
+    const id_transacao = body.data;
+
+    const resultParceladasById = await executeQuery(get_transacoes_parceladas_by_pai_id, id_transacao);
+    if(resultParceladasById){
+      const parcelasIds = resultParceladasById.map((par)=> par.par_id);
+      const resultBatch = await executeBatch(delete_transacao_parcela_by_id, parcelasIds);
+
+      if(resultBatch.affectedRows > 0){
+        const result = await executeQuery(delete_transacao_by_id, id_transacao);
+
+        if (result.affectedRows > 0) {
+          res.status(200).json({ message: 'Registros deletados com sucesso!' });
+        }
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Ocorreu um erro ao deletar o registro, tente novamente.' });
+  }
+
 });
 
 // Chamada POST para obter as transações por usuário.
