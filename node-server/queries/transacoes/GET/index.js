@@ -36,7 +36,7 @@ SELECT
     trs.trs_data_ocorrido,
     par.ano AS trs_ano_ocorrido,
     par.mes AS trs_mes_ocorrido,
-    rel.trs_pai_id AS trs_id,
+    par.trs_pai_id AS trs_id,
     trs.trs_valor,
     trs.trs_titulo,
     trs.trs_status,
@@ -50,9 +50,8 @@ SELECT
     trs.trs_parcelado,
     par.par_id
 FROM
-    tb_rel_parcelas rel
-    LEFT JOIN tb_parcelas par ON rel.rel_id = par.trs_pai_id
-    LEFT JOIN tb_transacoes trs ON rel.trs_pai_id = trs.trs_id
+    tb_parcelas par
+    LEFT JOIN tb_transacoes trs ON par.trs_pai_id = trs.trs_id
     LEFT JOIN tb_categorias cat ON cat.cat_id = trs.trs_categoria
     LEFT JOIN tb_metodo met ON met.met_id = trs.trs_metodo
     LEFT JOIN tb_tipo_transacao tip_trs ON tip_trs.tip_id = trs.trs_tipo
@@ -77,7 +76,5 @@ export const get_metodos = `
 `;
 
 export const get_transacoes_parceladas_by_pai_id = `
-	SELECT par.par_id FROM tb_parcelas par
-	JOIN tb_rel_parcelas rel_par ON rel_par.rel_id = par.trs_pai_id
-	WHERE par_deleted = 0 AND rel_par.trs_pai_id = ?
+SELECT par_id FROM tb_parcelas WHERE par_deleted = 0 AND trs_pai_id = ?
 `;
