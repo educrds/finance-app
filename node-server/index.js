@@ -24,9 +24,6 @@ app.post('/transacoes/listar', verifyToken, transacoes);
 // DELETAR TRANSAÇÕES
 app.post('/transacao/deletar', verifyToken, transacoes);
 
-// DELETAR TRANSAÇÃO PARCELADA
-app.post('/transacao/deletar-parcela', verifyToken, transacoes);
-
 // DELETAR TODAS TRANSAÇÕES POR ID
 app.post('/transacao/deletar-todas', verifyToken, transacoes);
 
