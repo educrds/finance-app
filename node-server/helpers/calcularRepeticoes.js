@@ -1,5 +1,5 @@
 // adicionar numero da transacao ao BD, para que na query possa retornar qual numero a parcela está
-export function calcularRepeticoes(idTransacaoPai, dataOcorrido, dataFimRepeticao) {
+export function calcularRepeticoes(idTransacaoPai, dataOcorrido, dataFimRepeticao, user_id) {
   // Extrair o ano e o mês da data de ocorrência
   const anoOcorrido = dataOcorrido.getFullYear();
   const mesOcorrido = dataOcorrido.getMonth() + 2; // Meses em JavaScript são baseados em zero, então adicionamos 1, por padrão, e mais 1 para começar sempre um mês a frente da data ocorrida.
@@ -20,7 +20,7 @@ export function calcularRepeticoes(idTransacaoPai, dataOcorrido, dataFimRepetica
 
   for (let i = 0; i < numRepeticoes; i++) {
     // Adicionar o ano e o mês atual ao array de repetições
-    repeticoes.push([idTransacaoPai, anoAtual, mesAtual]);
+    repeticoes.push([idTransacaoPai, anoAtual, mesAtual, user_id]);
 
     // Incrementar o mês e ajustar o ano, se necessário
     mesAtual++;
