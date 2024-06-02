@@ -23,7 +23,7 @@ router.post('/transacao/adicionar', async (req, res) => {
     const id_transacao_pai = result?.insertId;
 
     if (id_transacao_pai && trs_parcelado) {
-      await handleTransacaoParcelada(id_transacao_pai, data_ocorrido, data_fim_rep);
+      await handleTransacaoParcelada(id_transacao_pai, data_ocorrido, data_fim_rep, user_id);
     }
 
     if (result.affectedRows > 0) {
@@ -32,7 +32,6 @@ router.post('/transacao/adicionar', async (req, res) => {
       res.status(404).json({ message: 'Ocorreu um erro ao adicionar o registro, tente novamente.' });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: 'Ocorreu um erro ao adicionar o registro, tente novamente.' });
   }
 });
