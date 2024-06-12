@@ -36,6 +36,11 @@ app.post('/transacao/adicionar', verifyToken, adicionar_transacao);
 // LISTAR METÓDOS TRANSAÇÕES
 app.post('/transacoes/listar/metodos', verifyToken, transacoes);
 
+
+// -------------------- CHARTS
+app.post('/charts/comparativo-anual', verifyToken, transacoes);
+
+
 // -------------------- CATEGORIAS
 
 // ADD TRANSAÇÕES
@@ -52,6 +57,8 @@ app.post('/categoria/atualizar', verifyToken, categorias);
 
 // ADD TRANSAÇÕES
 app.post('/categoria/deletar', verifyToken, categorias);
+
+
 
 // -------------------- USUARIO
 

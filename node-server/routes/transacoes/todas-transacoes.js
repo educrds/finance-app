@@ -1,6 +1,6 @@
 import express from 'express';
 import { executeQuery, executeTransaction } from '../../config/db.config.js';
-import { transacoes_com_relacionamentos, get_metodos, get_transacoes_parceladas_by_pai_id } from '../../queries/transacoes/GET/index.js';
+import { transacoes_com_relacionamentos, get_metodos, get_transacoes_parceladas_by_pai_id, get_comparativo_anual } from '../../queries/transacoes/GET/index.js';
 import { delete_transacao_by_id, delete_transacao_parcela_by_id } from '../../queries/transacoes/DELETE/index.js';
 import { atualizar_transacao_por_id } from '../../queries/transacoes/UPDATE/index.js';
 
@@ -31,6 +31,27 @@ router.post('/transacoes/listar', async (req, res) => {
   }
 });
 
+router.post('/charts/comparativo-anual', async (req, res) => {
+  try {
+    const { data, user } = req.body;
+
+    const { filterDate } = data;
+    const { year } = getYearAndMonth(filterDate);
+    const { sub } = user;
+
+    const params = [sub, year, sub, year];
+
+    const result = await executeQuery(get_comparativo_anual, params);
+    if (result.length > 0) {
+      res.status(200).send(result);
+    } else {
+      res.status(200).send([]);
+    }
+  } catch (error) {
+    res.status(500).send({ message: 'Ocorreu um erro ao buscar dados do gráfico.' });
+  }
+});
+
 // Chamada POST para obter os metódos de pagamento.
 router.post('/transacoes/listar/metodos', async (req, res) => {
   try {
@@ -51,10 +72,10 @@ router.post('/transacao/deletar', async (req, res) => {
   try {
     const { body } = req;
     const { id_transacao, trs_parcelado } = body.data;
-    
+
     let result;
 
-    if(trs_parcelado){
+    if (trs_parcelado) {
       result = await executeQuery(delete_transacao_parcela_by_id, id_transacao);
     } else {
       result = await executeQuery(delete_transacao_by_id, id_transacao);
@@ -78,12 +99,12 @@ router.post('/transacao/deletar-todas', async (req, res) => {
 
     // Verifica se existem transações filhas
     if (result.length > 0) {
-      const ids_parcelas = result.map((par) => par.par_id);
+      const ids_parcelas = result.map(par => par.par_id);
 
       // Executa a transação que deleta as transações filhas e a transação pai
       await executeTransaction([
         { query: delete_transacao_parcela_by_id, params: [ids_parcelas] }, // Deleta as transações filhas
-        { query: delete_transacao_by_id, params: [id_transacao] } // Deleta a transação pai
+        { query: delete_transacao_by_id, params: [id_transacao] }, // Deleta a transação pai
       ]);
 
       res.status(200).json({ message: 'Registros deletados com sucesso!' });
@@ -91,7 +112,7 @@ router.post('/transacao/deletar-todas', async (req, res) => {
       // caso não exista mais transações filhas a serem excluídas
       result = await executeQuery(delete_transacao_by_id, id_transacao);
 
-      if(result.affectedRows > 0){
+      if (result.affectedRows > 0) {
         res.status(200).json({ message: 'Registros deletados com sucesso!' });
       }
     }
