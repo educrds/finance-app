@@ -1,15 +1,12 @@
-import express from 'express';
-import { executeQuery, executeTransaction } from '../../config/db.config.js';
-import { transacoes_com_relacionamentos, get_metodos, get_transacoes_parceladas_by_pai_id, get_comparativo_anual } from '../../queries/transacoes/GET/index.js';
-import { delete_transacao_by_id, delete_transacao_parcela_by_id } from '../../queries/transacoes/DELETE/index.js';
-import { atualizar_transacao_por_id } from '../../queries/transacoes/UPDATE/index.js';
+import { executeQuery, executeTransaction } from "../config/db.config.js";
+import { getYearAndMonth } from "../helpers/gerYearAndMonth.js";
+import { handleTransacaoParcelada } from "../helpers/handleTransacaoParcelada.js";
+import { delete_transacao_by_id, delete_transacao_parcela_by_id } from "../queries/transacoes/DELETE/index.js";
+import { get_metodos, get_transacoes_parceladas_by_pai_id, transacoes_com_relacionamentos } from "../queries/transacoes/GET/index.js";
+import { insert_transacao } from "../queries/transacoes/INSERT/index.js";
+import { atualizar_transacao_por_id } from "../queries/transacoes/UPDATE/index.js";
 
-import { getYearAndMonth } from '../../helpers/gerYearAndMonth.js';
-
-const router = express.Router();
-
-// Chamada POST para obter as transações por usuário.
-router.post('/transacoes/listar', async (req, res) => {
+export const listarTransacoes = async (req, res) => {
   try {
     const { body } = req;
 
@@ -29,31 +26,40 @@ router.post('/transacoes/listar', async (req, res) => {
   } catch (error) {
     res.status(500).send({ message: 'Ocorreu um erro ao buscar transações.' });
   }
-});
+}
 
-router.post('/charts/comparativo-anual', async (req, res) => {
+export const adicionarTransacao = async (req, res) => {
   try {
-    const { data, user } = req.body;
+    const { sub } = req.body.user;
+    const { trs_valor, trs_titulo, trs_categoria, trs_data_ocorrido, data_fim_repeticao, trs_tipo, trs_metodo, trs_parcelado, trs_status } = req.body.data;
 
-    const { filterDate } = data;
-    const { year } = getYearAndMonth(filterDate);
-    const { sub } = user;
+    let data_fim_rep = new Date(data_fim_repeticao);
+    const data_ocorrido = new Date(trs_data_ocorrido);
+    const data_ocorrido_formatted = data_ocorrido.toISOString().slice(0, 19).replace('T', ' ');
 
-    const params = [sub, year, sub, year];
+    const user_id = sub;
 
-    const result = await executeQuery(get_comparativo_anual, params);
-    if (result.length > 0) {
-      res.status(200).send(result);
+    // Montar os parâmetros
+    const params = [trs_valor, data_ocorrido_formatted, trs_titulo, trs_categoria, user_id, trs_tipo, trs_metodo, trs_parcelado, trs_status];
+    const result = await executeQuery(insert_transacao, params);
+
+    const id_transacao_pai = result?.insertId;
+
+    if (id_transacao_pai && trs_parcelado) {
+      await handleTransacaoParcelada(id_transacao_pai, data_ocorrido, data_fim_rep, user_id);
+    }
+
+    if (result.affectedRows > 0) {
+      res.status(200).json({ message: 'Registro adicionado com sucesso!' });
     } else {
-      res.status(200).send([]);
+      res.status(404).json({ message: 'Ocorreu um erro ao adicionar o registro, tente novamente.' });
     }
   } catch (error) {
-    res.status(500).send({ message: 'Ocorreu um erro ao buscar dados do gráfico.' });
+    res.status(500).json({ message: 'Ocorreu um erro ao adicionar o registro, tente novamente.' });
   }
-});
+}
 
-// Chamada POST para obter os metódos de pagamento.
-router.post('/transacoes/listar/metodos', async (req, res) => {
+export const listarMetodos = async (req, res) => {
   try {
     const result = await executeQuery(get_metodos);
 
@@ -65,10 +71,9 @@ router.post('/transacoes/listar/metodos', async (req, res) => {
   } catch (error) {
     res.status(500).send({ message: 'Ocorreu um erro ao buscar metódos.' });
   }
-});
+}
 
-// Chamada POST para deletar a transacao por id.
-router.post('/transacao/deletar', async (req, res) => {
+export const deletarTransacaoById = async (req, res) => {
   try {
     const { body } = req;
     const { id_transacao, trs_parcelado } = body.data;
@@ -87,10 +92,9 @@ router.post('/transacao/deletar', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Ocorreu um erro ao deletar o registro, tente novamente.' });
   }
-});
+}
 
-// Rota POST para deletar todas as transações relacionadas a uma transação pai
-router.post('/transacao/deletar-todas', async (req, res) => {
+export const deletarTransacaoEmMassa = async (req, res) => {
   try {
     const id_transacao = req.body.data;
 
@@ -120,10 +124,9 @@ router.post('/transacao/deletar-todas', async (req, res) => {
     // Responde com erro 500 se ocorrer um erro ao deletar os registros
     res.status(500).json({ message: 'Ocorreu um erro ao deletar registros, tente novamente.' });
   }
-});
+}
 
-// Chamada POST para obter as transações por usuário.
-router.post('/transacao/atualizar', async (req, res) => {
+export const atualizarTransacaoById = async (req, res) => {
   try {
     const { body } = req;
 
@@ -140,6 +143,4 @@ router.post('/transacao/atualizar', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Ocorreu um erro ao atualizar o registro, tente novamente.' });
   }
-});
-
-export default router;
+}
