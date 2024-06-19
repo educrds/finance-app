@@ -1,18 +1,16 @@
-import express from 'express';
-import { executeQuery } from '../../config/db.config.js';
-import { comparePassword, hashPassword } from '../../helpers/hash-password.config.js';
-import { insert_user_in_bd } from '../../queries/user/INSERT/index.js';
-import { get_user_by_email, verify_exists_email } from '../../queries/user/GET/index.js';
+import { executeQuery } from "../config/db.config.js";
+import { comparePassword, hashPassword } from "../helpers/hash-password.config.js";
+import { privateKey } from "../middlewares/verify-token.js";
+import { get_user_by_email, verify_exists_email } from "../queries/user/GET/index.js";
+import { insert_user_in_bd } from "../queries/user/INSERT/index.js";
 import jwt from 'jsonwebtoken';
-import { privateKey } from '../../middlewares/verify-token.js';
 
-const router = express.Router();
 const signOptions = {
   algorithm: 'RS256',
   expiresIn: '1d'
 };
 
-router.post('/user/register', async (req, res) => {
+export const registerUser = async (req, res) => {
   const { data } = req.body;
   const { socialAuth } = req.body;
   const { auth_name, auth_email, auth_password } = data;
@@ -43,9 +41,9 @@ router.post('/user/register', async (req, res) => {
   }
 
   res.status(200).json({ message: 'Ocorreu um erro ao adicionar o registro, tente novamente!' });
-});
+}
 
-router.post('/user/login', async (req, res) => {
+export const loginUser = async (req, res) => {
   const { data } = req.body;
   const { socialAuth } = req.body;
   const { auth_email, auth_password } = data;
@@ -71,6 +69,5 @@ router.post('/user/login', async (req, res) => {
   }
 
   return res.status(401).json({ message: 'Credenciais não válidas.' });
-});
+}
 
-export default router;
