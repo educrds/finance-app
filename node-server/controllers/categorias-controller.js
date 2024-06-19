@@ -1,17 +1,11 @@
-import express from 'express';
-import { executeQuery } from '../../config/db.config.js';
+import { executeQuery } from '../config/db.config.js';
+import { verifyExistsCategory } from '../helpers/verifyExistsCategory.js';
+import { deletar_categoria } from '../queries/categorias/DELETE/index.js';
+import { get_categorias, get_categorias_select } from '../queries/categorias/GET/index.js';
+import { insert_categoria } from '../queries/categorias/INSERT/index.js';
+import { atualizar_categoria } from '../queries/categorias/UPDATE/index.js';
 
-import { get_categorias } from '../../queries/categorias/GET/index.js';
-import { insert_categoria } from '../../queries/categorias/INSERT/index.js';
-import { atualizar_categoria } from '../../queries/categorias/UPDATE/index.js';
-import { deletar_categoria } from '../../queries/categorias/DELETE/index.js';
-import { get_categorias_select } from '../../queries/categorias/GET/index.js';
-import { verifyExistsCategory } from '../../helpers/verifyExistsCategory.js';
-
-const router = express.Router();
-
-// Chamada POST para listar as categorias por usuário.
-router.post('/categorias/listar', async (req, res) => {
+export const listarCategorias = async (req, res) => {
   try {
     const { sub } = req.body.user;
 
@@ -22,10 +16,9 @@ router.post('/categorias/listar', async (req, res) => {
   } catch (error) {
     res.status(404).send({ message: 'Ocorreu um erro ao buscar categorias' });
   }
-});
+};
 
-// Chamada POST para listar as categorias do tipo select por usuário e tipo.
-router.post('/categorias/listar-select', async (req, res) => {
+export const listarCategoriasSelect = async (req, res) => {
   try {
     const { sub } = req.body.user;
     const { cat_tip_id } = req.body.data;
@@ -39,17 +32,16 @@ router.post('/categorias/listar-select', async (req, res) => {
   } catch (error) {
     res.status(500).send({ message: '  s' });
   }
-});
+};
 
-// Chamada POST para adicionar as categorias por usuário.
-router.post('/categoria/adicionar', async (req, res) => {
+export const adicionarCategoria = async (req, res) => {
   try {
     const { sub } = req.body.user;
     const { cat_nome, cat_cor, cat_tip_id } = req.body.data;
 
     const existsCategory = await verifyExistsCategory([cat_nome, sub]);
-    if(existsCategory){
-        return res.status(500).json({ message: 'Já existe uma categoria com o nome fornecido.' });
+    if (existsCategory) {
+      return res.status(500).json({ message: 'Já existe uma categoria com o nome fornecido.' });
     }
 
     // Montar os parâmetros
@@ -62,17 +54,16 @@ router.post('/categoria/adicionar', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Ocorreu um erro ao adicionar o registro, tente novamente.' });
   }
-});
+};
 
-// Chamada POST para obter as atualizar a categoria por usuário
-router.post('/categoria/atualizar', async (req, res) => {
+export const atualizarCategoria = async (req, res) => {
   try {
     const { sub } = req.body.user;
     const { cat_nome, cat_cor, cat_tip_id, cat_id } = req.body.data;
 
     const existsCategory = await verifyExistsCategory([cat_nome, sub]);
-    if(existsCategory){
-        return res.status(500).json({ message: 'Já existe uma categoria com o nome fornecido.' });
+    if (existsCategory) {
+      return res.status(500).json({ message: 'Já existe uma categoria com o nome fornecido.' });
     }
 
     // Montar os parâmetros
@@ -84,10 +75,9 @@ router.post('/categoria/atualizar', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Ocorreu um erro ao atualizar o registro, tente novamente.' });
   }
-});
+};
 
-// Chamada POST para deletar categoria por id.
-router.post('/categoria/deletar', async (req, res) => {
+export const deletarCategoria = async (req, res) => {
   try {
     const { cat_id } = req.body.data;
 
@@ -98,6 +88,4 @@ router.post('/categoria/deletar', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Ocorreu um erro ao deletar o registro, tente novamente.' });
   }
-});
-
-export default router;
+};
