@@ -62,7 +62,7 @@ export const atualizarCategoria = async (req, res) => {
     const { cat_nome, cat_cor, cat_tip_id, cat_id } = req.body.data;
 
     const existsCategory = await verifyExistsCategory([cat_nome, sub]);
-    if (existsCategory) {
+    if (existsCategory && existsCategory[0].id !== cat_id) {
       return res.status(500).json({ message: 'Já existe uma categoria com o nome fornecido.' });
     }
 

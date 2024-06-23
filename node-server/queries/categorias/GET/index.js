@@ -18,7 +18,7 @@ WHERE cat_ativo = '0' AND cat_tip_id = ? AND (usr_id = ? || usr_id IS NULL);
 `
 
 export const verify_exists_category = `
-SELECT cat_nome
+SELECT cat_nome, cat_id as id
 FROM 
   tb_categorias
 WHERE cat_nome = ? AND usr_id = ? AND cat_ativo = 0;
