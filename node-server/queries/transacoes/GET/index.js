@@ -1,5 +1,5 @@
-export const transacoes_com_relacionamentos = `
-SELECT
+export const transacoes_com_relacionamentos =
+`SELECT
 	trs.trs_data_ocorrido,
 	trs.trs_ano_ocorrido,
 	trs.trs_mes_ocorrido,
@@ -15,7 +15,14 @@ SELECT
 	tip_trs.tip_nome AS tipo_transacao,
 	tip_trs.tip_id AS id_tipo_transacao,
 	trs.trs_parcelado,
-	NULL as par_id
+	trs.trs_num_parcela,
+	NULL as par_id,
+    (
+        SELECT CAST(COUNT(par.par_id) + 1 AS SIGNED)
+        FROM tb_parcelas par
+        WHERE par.trs_pai_id = trs.trs_id
+    ) AS total_parcelas
+
 FROM
 	tb_transacoes trs
 	LEFT JOIN tb_categorias cat ON cat.cat_id = trs.trs_categoria
@@ -48,7 +55,13 @@ SELECT
     tip_trs.tip_nome AS tipo_transacao,
     tip_trs.tip_id AS id_tipo_transacao,
     trs.trs_parcelado,
-    par.par_id
+    par.num_parcela,
+    par.par_id,
+    (
+        SELECT CAST(COUNT(par.par_id) + 1 AS SIGNED)
+        FROM tb_parcelas par
+        WHERE par.trs_pai_id = trs.trs_id
+    ) AS total_parcelas
 FROM
     tb_parcelas par
     LEFT JOIN tb_transacoes trs ON par.trs_pai_id = trs.trs_id
