@@ -21,4 +21,4 @@ app.use('/transacao', verifyToken, transacoes);
 app.use('/chart', verifyToken, charts);
 app.use('/user', user);
 
-app.listen(PORT, '192.168.1.20', () => console.log(`server is running on port: http://localhost: ${PORT}`));
+app.listen(PORT, () => console.log(`server is running on port: http://localhost: ${PORT}`));
