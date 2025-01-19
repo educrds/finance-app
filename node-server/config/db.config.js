@@ -10,6 +10,7 @@ const pool = mariadb.createPool({
   port: process.parsed.PORT,
   password: process.parsed.PASSWORD,
   connectionLimit: 3,
+  bigIntAsNumber: true
 });
 
 export async function executeQuery(query, ...params) {
@@ -17,7 +18,6 @@ export async function executeQuery(query, ...params) {
 
   try {
     conn = await pool.getConnection();
-
     return await conn.query(query, ...params);
   } catch (error) {
     throw error;
