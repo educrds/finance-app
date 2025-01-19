@@ -18,6 +18,7 @@ export const listarTransacoes = async (req, res) => {
     const params = [user_id, tipo_transacao, tipo_transacao, tipo_transacao, year, month, user_id, tipo_transacao, tipo_transacao, tipo_transacao, year, month];
 
     const result = await executeQuery(transacoes_com_relacionamentos, params);
+
     if (result.length > 0) {
       res.status(200).send(result);
     } else {
@@ -38,9 +39,10 @@ export const adicionarTransacao = async (req, res) => {
     const data_ocorrido_formatted = data_ocorrido.toISOString().slice(0, 19).replace('T', ' ');
 
     const user_id = sub;
+    const num_parcela = trs_parcelado ? 1 : null;
 
     // Montar os parâmetros
-    const params = [trs_valor, data_ocorrido_formatted, trs_titulo, trs_categoria, user_id, trs_tipo, trs_metodo, trs_parcelado, trs_status];
+    const params = [trs_valor, data_ocorrido_formatted, trs_titulo, trs_categoria, user_id, trs_tipo, trs_metodo, trs_parcelado, trs_status, num_parcela];
     const result = await executeQuery(insert_transacao, params);
 
     const id_transacao_pai = result?.insertId;
