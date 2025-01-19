@@ -17,10 +17,13 @@ export function calcularRepeticoes(idTransacaoPai, dataOcorrido, dataFimRepetica
   // Iterar para cada repetição e adicionar ao array
   let anoAtual = anoOcorrido;
   let mesAtual = mesOcorrido;
-
+  
+  
   for (let i = 0; i < numRepeticoes; i++) {
+    let num_parcela = i + 1;
+
     // Adicionar o ano e o mês atual ao array de repetições
-    repeticoes.push([idTransacaoPai, anoAtual, mesAtual, user_id]);
+    repeticoes.push([idTransacaoPai, anoAtual, mesAtual, user_id, num_parcela + 1]);
 
     // Incrementar o mês e ajustar o ano, se necessário
     mesAtual++;
