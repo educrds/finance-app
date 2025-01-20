@@ -14,7 +14,8 @@ SELECT
   cat_id as id, cat_nome as text
 FROM 
   tb_categorias
-WHERE cat_ativo = '0' AND cat_tip_id = ? AND (usr_id = ? || usr_id IS NULL);
+WHERE cat_ativo = '0' AND cat_tip_id = ? AND (usr_id = ? || usr_id IS NULL)
+ORDER BY text ASC
 `
 
 export const verify_exists_category = `
