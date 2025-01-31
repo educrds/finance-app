@@ -42,7 +42,7 @@ const verifyJwtToken = (token, key, algorithms) => {
 export const verifyToken = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
 
-  if (!token) {
+  if (!token || isTokenExpired(token)) {
     return res.status(401).send({ message: 'Usuário não autenticado.' });
   }
 
@@ -64,4 +64,9 @@ export const verifyToken = async (req, res, next) => {
   } catch (err) {
     res.status(403).send({ message: 'Token inválido.' });
   }
+};
+
+const isTokenExpired = (token) => {
+  const decoded = jwt.decode(token);
+  return decoded?.exp * 1000 < Date.now();
 };
