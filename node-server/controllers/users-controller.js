@@ -1,6 +1,7 @@
 import { executeQuery } from "../config/db.config.js";
 import { comparePassword, hashPassword } from "../helpers/hash-password.config.js";
 import { privateKey } from "../middlewares/verify-token.js";
+import { insert_preferencia_new_user } from "../queries/preferences/INSERT/index.js";
 import { get_user_by_email, verify_exists_email } from "../queries/user/GET/index.js";
 import { insert_user_in_bd } from "../queries/user/INSERT/index.js";
 import jwt from 'jsonwebtoken';
@@ -28,10 +29,11 @@ export const registerUser = async (req, res) => {
   
   const params = [auth_name, auth_email, hashPwd];
   result = await executeQuery(insert_user_in_bd, params);
+  const insertId = String(result.insertId).replace('n');
+  const preferencesNewUser = await executeQuery(insert_preferencia_new_user, insertId);
 
   if (result.affectedRows > 0) {
     if(!socialAuth){
-      const insertId = String(result.insertId).replace('n');
       const payload = { sub: insertId, name: auth_name, email: auth_email };
       const token = jwt.sign(payload, privateKey, signOptions);
       return res.status(200).json({ message: 'Usuário adicionado com sucesso!', token: token });

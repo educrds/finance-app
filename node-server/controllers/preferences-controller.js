@@ -1,6 +1,6 @@
 import { executeQuery } from '../config/db.config.js';
 import { get_preferencias } from '../queries/preferences/GET/index.js';
-import { insert_preferencia } from '../queries/preferences/INSERT/index.js';
+import { insert_preferencia, insert_preferencia_new_user } from '../queries/preferences/INSERT/index.js';
 import { update_preferencia } from '../queries/preferences/UPDATE/index.js';
 
 export const listarPreferencias = async (req, res) => {
@@ -42,23 +42,14 @@ export const atualizarPreferencia = async (req, res) => {
   }
 };
 
-// export const atualizarPreferencia = async (req, res) => {
-//   try {
-//     const { sub } = req.body.user;
-//     const { cat_nome, cat_cor, cat_tip_id, cat_id } = req.body.data;
+export const createPreferencesNewUser = async (user) => {
+  try {
+    const result = await executeQuery(insert_preferencia_new_user, user);
 
-//     const existsCategory = await verifyExistsCategory([cat_nome, sub]);
-//     if (existsCategory && existsCategory[0].id !== cat_id) {
-//       return res.status(500).json({ message: 'Já existe uma categoria com o nome fornecido.' });
-//     }
-
-//     // Montar os parâmetros
-//     const params = [cat_nome, cat_cor, sub, cat_tip_id, cat_id];
-//     const result = await executeQuery(atualizar_categoria, params);
-//     if (result.affectedRows > 0) {
-//       res.status(200).json({ message: 'Registro adicionado com sucesso!' });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ message: 'Ocorreu um erro ao atualizar o registro, tente novamente.' });
-//   }
-// };
+    if (result.affectedRows > 0) {
+      res.status(200).json({ message: 'Registro adicionado com sucesso!' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Ocorreu um erro ao adicionar o registro, tente novamente.' });
+  }
+}
