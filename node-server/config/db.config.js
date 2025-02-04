@@ -2,8 +2,7 @@ import mariadb from 'mariadb';
 import dotenv from 'dotenv';
 
 const process = dotenv.config();
-
-const pool = mariadb.createPool({
+let dbConfig = {
   host: process.parsed.HOST,
   database: process.parsed.DATABASE,
   user: process.parsed.USER,
@@ -11,7 +10,21 @@ const pool = mariadb.createPool({
   password: process.parsed.PASSWORD,
   connectionLimit: 3,
   bigIntAsNumber: true
-});
+}
+
+if(process.env.NODE_ENV === 'production') {
+  console.log('Connecting to RDS database');
+  dbConfig = {
+    ...dbConfig,
+    host: process.parsed.RDS_HOSTNAME,
+    database: process.parsed.RDS_DATABASE,
+    user: process.parsed.RDS_USER,
+    port: process.parsed.RDS_PORT,
+    password: process.parsed.RDS_PASSWORD,
+  }
+}
+
+const pool = mariadb.createPool(dbConfig);
 
 export async function executeQuery(query, ...params) {
   let conn;
