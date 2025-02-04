@@ -13,7 +13,7 @@ import { verifyToken } from './middlewares/verify-token.js';
 
 const app = express();
 // environment
-const PORT = 4201;
+const PORT = 8080;
 
 app.use(bodyParser.json(), cors(), bodyParser.urlencoded({ extended: true }));
 
@@ -22,5 +22,6 @@ app.use('/preferencias', verifyToken, preferences);
 app.use('/transacao', verifyToken, transacoes);
 app.use('/chart', verifyToken, charts);
 app.use('/user', user);
+app.use('/healthcheck', (req, res) => res.return(200).send('Its ok'))
 
 app.listen(PORT, () => console.log(`server is running on port: http://localhost: ${PORT}`));
